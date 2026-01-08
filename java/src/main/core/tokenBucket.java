@@ -1,5 +1,6 @@
 package main.core;
 
+import main.registry.bucketRegistry;
 import main.time.systemTimeProvider;
 
 public class tokenBucket {
@@ -23,7 +24,7 @@ public class tokenBucket {
 
         refillBucketIfNeeded();
 
-        if (tokens < 0)
+        if (tokens <= 0)
             return false;
         tokens--;
         return true;
@@ -44,5 +45,9 @@ public class tokenBucket {
     @Override
     public String toString() {
         return "{ tokens" + tokens + "bucket" + bucketCapcity + " }";
+    }
+
+    public int getTokens() {
+        return tokens;
     }
 }

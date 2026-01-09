@@ -1,12 +1,12 @@
 package main.core;
 
-import main.registry.bucketRegistry;
 import main.time.systemTimeProvider;
 
 public class tokenBucket {
     private final int bucketCapcity;
     private int tokens;
     private final long refillInterval;
+    private long lastAccessTime;
     private long lastRefillTime;
     private final systemTimeProvider timeProvider;
 
@@ -18,7 +18,8 @@ public class tokenBucket {
         this.refillInterval = refillInterval;
     };
 
-    public boolean consumeToken() {
+    public synchronized boolean consumeToken() {
+        lastAccessTime = timeProvider.nowMillis();
         // checks the last refill time of bucket and compare between refillinterval
         // if last refill time is greater than refillinterval
 
@@ -41,6 +42,10 @@ public class tokenBucket {
             lastRefillTime = now;
         }
     };
+
+    public long getLastAccessTime() {
+        return lastAccessTime;
+    }
 
     @Override
     public String toString() {

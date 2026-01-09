@@ -11,6 +11,7 @@ public class bucketRegistry {
     private final int bucketCapcity;
     private final long refillInterval;
     private final systemTimeProvider timeProvider;
+    private static final long bucketTTL = 5 * 60 * 1000;
 
     private final ConcurrentHashMap<String, tokenBucket> buckets = new ConcurrentHashMap<>();
 
@@ -32,4 +33,16 @@ public class bucketRegistry {
     public void showBuckets() {
         buckets.forEach((key, bucket) -> System.out.println(key + "->" + bucket));
     }
+
+    // unused buckets cleanup
+
+    public void cleanupUnusedBuckets() {
+        long now = timeProvider.nowMillis();
+
+        buckets.entrySet().removeIf(entry -> {
+            tokenBucket bucket = entry.getValue();
+            return now - bucket.getLastAccessTime() > bucketTTL;
+        });
+    }
+
 }

@@ -1,8 +1,11 @@
 package main.time;
 
-public class systemTimeProvider implements timeProvider {
-    public long nowMillis() {
-        // return current system in ms
+/*
+ * Implementation of TimeProvider using the system clock.
+ */
+
+public class SystemTimeProvider implements TimeProvider {
+    public long now() {
         return System.currentTimeMillis();
     }
 }

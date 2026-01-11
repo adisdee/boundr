@@ -1,12 +1,19 @@
 package test.time;
 
-import main.time.systemTimeProvider;
+import main.time.SystemTimeProvider;
+import main.time.TimeProvider;
 
-public class timeProviderTest {
+/*
+ * Test that system time provider returns moving forward time 
+ */
+
+public class TimeProviderTest {
     public static void main(String[] args) {
-        // return system current time in milliseconds
-        
-        systemTimeProvider time = new systemTimeProvider();
-        System.out.println(time.nowMillis());
+        TimeProvider time = new SystemTimeProvider();
+
+        long t1 = time.now();
+        long t2 = time.now();
+
+        assert t2 >= t1 : "Time Need to move forward";
     }
 }

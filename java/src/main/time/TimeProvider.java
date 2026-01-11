@@ -1,5 +1,12 @@
 package main.time;
 
-public interface timeProvider {
-    long nowMillis();
+/*
+ * Provides current time in milliseconds
+ */
+
+public interface TimeProvider {
+    /*
+     * @return current time in milliseconds
+     */
+    long now();
 }

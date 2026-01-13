@@ -1,23 +1,40 @@
 package test.core;
 
-import main.core.tokenBucket;
-import main.time.systemTimeProvider;
+import main.core.TokenBucket;
+import main.time.SystemTimeProvider;
+import main.time.TimeProvider;
 
-public class tokenBucketTest {
+/*
+ * Test that performs token consumption and refilling     
+ */
+
+public class TokenBucketTest {
     public static void main(String[] args) throws InterruptedException {
-        systemTimeProvider time = new systemTimeProvider();
-        tokenBucket bucket = new tokenBucket(10, 3000, time);
+        TimeProvider time = new SystemTimeProvider();
+        TokenBucket bucket = new TokenBucket(3, 2000, time);
 
-        for (int i = 1; i <= 10; i++) {
-            System.out.println("Started consuming tokens...");
-            bucket.consumeToken();
-            System.out.println(bucket);
-        }
+        /* Consume all tokens */
 
-        System.out.println("Waiting for refilling");
-        Thread.sleep(3000);
+        assert bucket.consumeToken();
+        assert bucket.consumeToken();
+        assert bucket.consumeToken();
 
-        System.out.println("After refill again consume single token... " + bucket.consumeToken());
-        System.out.println(bucket);
+        /* Request needs to be rejected when bucket is empty */
+
+        assert !bucket.consumeToken() : "Bucket must reject when empty";
+
+        System.out.println("All tokens exhausted");
+
+        /* Refilling bucket */
+
+        System.out.println("Waiting for refill..");
+        Thread.sleep(5000);
+
+        /* Request needs to be allowed when bucket is refilled */
+
+        assert bucket.consumeToken() : "Bucket should refiil after interval";
+
+        System.out.println("TOKEN BUCKET TEST PASSED");
+
     }
 }

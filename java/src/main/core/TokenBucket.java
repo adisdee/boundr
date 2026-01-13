@@ -1,27 +1,37 @@
 package main.core;
 
-import main.time.systemTimeProvider;
+import main.time.TimeProvider;
 
-public class tokenBucket {
+/*
+ * TokenBucket implements token bucket rate limiting.
+ * Each request or call consume a token and token are refilled after a fixed time interval
+ */
+
+public class TokenBucket {
     private final int bucketCapcity;
     private int tokens;
     private final long refillInterval;
     private long lastAccessTime;
     private long lastRefillTime;
-    private final systemTimeProvider timeProvider;
+    private final TimeProvider timeProvider;
 
-    public tokenBucket(int bucketCapcity, long refillInterval, systemTimeProvider timeProvider) {
-        this.bucketCapcity = bucketCapcity;
-        this.tokens = bucketCapcity;
-        this.lastRefillTime = timeProvider.nowMillis();
+    public TokenBucket(int bucketCapacity, long refillInterval, TimeProvider timeProvider) {
+        this.bucketCapcity = bucketCapacity;
+        this.tokens = bucketCapacity;
+        this.lastRefillTime = timeProvider.now();
         this.timeProvider = timeProvider;
         this.refillInterval = refillInterval;
+        this.lastAccessTime = lastRefillTime;
     };
 
+    /*
+     * Consume one token from the bucket.
+     * 
+     * @return true if token was consumed, false if limit exceeded
+     */
+
     public synchronized boolean consumeToken() {
-        lastAccessTime = timeProvider.nowMillis();
-        // checks the last refill time of bucket and compare between refillinterval
-        // if last refill time is greater than refillinterval
+        lastAccessTime = timeProvider.now();
 
         refillBucketIfNeeded();
 
@@ -31,10 +41,12 @@ public class tokenBucket {
         return true;
     };
 
-    public void refillBucketIfNeeded() {
-        // comparison between current time and last refill time
+    /*
+     * Refills the bucket if refill interval has elapsed
+     */
 
-        long now = timeProvider.nowMillis();
+    private void refillBucketIfNeeded() {
+        long now = timeProvider.now();
         long elapsed = now - lastRefillTime;
 
         if (elapsed >= refillInterval) {
@@ -43,16 +55,11 @@ public class tokenBucket {
         }
     };
 
+    /*
+     * @return last access time in ms of token bucket
+     */
+
     public long getLastAccessTime() {
         return lastAccessTime;
-    }
-
-    @Override
-    public String toString() {
-        return "{ tokens" + tokens + "bucket" + bucketCapcity + " }";
-    }
-
-    public int getTokens() {
-        return tokens;
     }
 }

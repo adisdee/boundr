@@ -1,10 +1,10 @@
 package main.config;
 
-public class boundrConfig {
+public class BoundrConfig {
     private final int bucketCapcity;
     private final long refillInterval;
 
-    public boundrConfig(int bucketCapcity, long refillInterval) {
+    public BoundrConfig(int bucketCapcity, long refillInterval) {
         this.bucketCapcity = bucketCapcity;
         this.refillInterval = refillInterval;
     }

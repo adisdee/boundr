@@ -1,24 +1,33 @@
 package test.boundr;
 
-import main.api.boundr;
+import main.api.Boundr;
+import main.config.BoundrConfig;
 
-public class boundrTest {
+/* Test that performs boundr api testing */
+
+public class BoundrTest {
     public static void main(String[] args) throws InterruptedException {
-        boundr b = new boundr(20, 2000);
+        BoundrConfig config = new BoundrConfig(2, 15000);
+        Boundr boundr = new Boundr(config);
 
-        for (int i = 1; i < 15; i++) {
-            System.out.println("Using token from the bucket..." + b.allow("user123"));
-            System.out.println("Token left: " + b.getTokens("user123"));
-        }
+        /* Sending request */
+        
+        assert boundr.allow("user123");
+        assert boundr.allow("user123");
 
-        System.out.println("Refilling Bucket...");
-        Thread.sleep(2000);
+        assert boundr.allow("user123") : "Request should be blocked";
 
-        for (int i = 1; i < 10; i++) {
-            System.out.println("After Refilling Bucket Again hitting request..." + b.allow("user123"));
-            System.out.println("Token left: " + b.getTokens("user123"));
-        }
+        System.out.println("User blocked");
 
-        System.out.println(b.getTokens("user123"));
+        /* Refilling tokens */
+
+        System.out.println("Waiting to refill tokens");
+        Thread.sleep(25000);
+
+        /* Again sending request */
+
+        assert boundr.allow("user123") : "Request should be allowed";
+
+        System.out.println("BOUNDR TEST PASSED");
     }
 }

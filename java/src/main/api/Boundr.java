@@ -15,7 +15,7 @@ public class Boundr {
     };
 
     public Boundr(BoundrConfig config, TimeProvider timeProvider) {
-        this.registry = new BucketRegistry(config.getCapcity(), config.getRefillInterval(), timeProvider);
+        this.registry = new BucketRegistry(config.getCapacity(), config.getRefillInterval(), timeProvider);
     };
 
     /* @return true if request is allowed, false otherwise */

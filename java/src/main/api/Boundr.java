@@ -1,30 +1,35 @@
 package main.api;
 
-import main.config.boundrConfig;
-import main.registry.bucketRegistry;
-import main.time.systemTimeProvider;
+import main.config.BoundrConfig;
+import main.registry.BucketRegistry;
+import main.time.SystemTimeProvider;
+import main.time.TimeProvider;
 
-public class boundr {
-    private final bucketRegistry registry;
+/* Public API for rate limiting */
 
-    public boundr(boundrConfig config) {
-        this.registry = new bucketRegistry(config.getCapcity(), config.getRefillInterval(), new systemTimeProvider());
-    }
+public class Boundr {
+    private final BucketRegistry registry;
 
-    // needs to pass a key that will go in registry then goes to token bucket it
-    // verifies and return boolean
+    public Boundr(BoundrConfig config) {
+        this(config, new SystemTimeProvider());
+    };
+
+    public Boundr(BoundrConfig config, TimeProvider timeProvider) {
+        this.registry = new BucketRegistry(config.getCapcity(), config.getRefillInterval(), timeProvider);
+    };
+
+    /* @return true if request is allowed, false otherwise */
 
     public boolean allow(String key) {
+        if (key == null || key.isEmpty()) {
+            throw new IllegalArgumentException("Key must not be null");
+        }
         return registry.getBucket(key).consumeToken();
-    }
+    };
 
-    public int getTokens(String key) {
-        return registry.getBucket(key).getTokens();
-    }
-
-    // clear buckets that are not used for last 5 minutes
+    /* Cleanup of unused buckets */
 
     public void cleanupBuckets() {
         registry.cleanupUnusedBuckets();
-    }
+    };
 }

@@ -27,7 +27,7 @@ export class TokenBucket {
 
   /* @return true if token was consumed, false if limit exceeded */
 
-  public consumToken(): boolean {
+  public consumeToken(): boolean {
     this.lastAccessTime = this.timeProvider.now();
 
     this.refillBucketIfNeeded();

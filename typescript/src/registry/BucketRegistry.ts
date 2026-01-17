@@ -42,7 +42,7 @@ export class BucketRegistry {
 
   /* remove unused buckets that are not accessed within TTL */
 
-  public cleanupUsedBuckets(): void {
+  public cleanupUnusedBuckets(): void {
     const currentTime = this.timeProvider.now();
 
     for (const [key, bucket] of this.buckets.entries()) {
